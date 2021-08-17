@@ -1,24 +1,19 @@
 import React from 'react';
 import { Header } from '../Header/Header';
 import RandomPlanet from '../RandomPlanet/RandomPlanet';
-import ItemList from '../ItemList/ItemList';
+import PersonSection from '../PersonSection/PersonSection';
 
-import PersonDetails from '../PersonDetail/PersonDetail';
+export default class App extends React.Component {
 
+    
 
-export const App = () => {
-  return (
-    <div>
-      <Header/>
-      <RandomPlanet />
-      <div className="row mb2">
-        <div className="col-md-6">
-          <ItemList />
-        </div>
-        <div className="col-md-6">
-          <PersonDetails />
-        </div>
+  render() {
+    return (
+      <div>
+        <Header/>
+        <RandomPlanet />
+        <PersonSection/>
       </div>
-    </div>
-  )
+    )
+  }
 }

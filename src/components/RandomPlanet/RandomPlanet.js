@@ -5,28 +5,42 @@ import { Spiner } from '../Spiner/Spiner';
 import './RandomPlanet.css';
 
 export default class RandomPlanet extends Component {
-  constructor() {
-    super()    
-    this.updatePlanet()
-  }
-
+  
   state = {
     planet: {},
     loading: true,
     error: false,
   }
   
-  swapi = new SwapiService();
+  componentDidMount() {
+    this.updatePlanet();
+    this.interval = setInterval(this.updatePlanet, 5000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
 
   onPlanetLoaded = (planet) => {
-    this.setState({planet, loading: false, error: false})
+    this.setState({
+      planet,
+      loading: false,
+      error: false
+    });
   }
+
   onError = () => {
-    this.setState({error: true, loading: false})
+    this.setState({
+      error: true,
+      loading: false
+    });
   }
-  async updatePlanet() {
+
+  swapi = new SwapiService();
+
+  updatePlanet = () => {
     const id = Math.floor(Math.random() * 25) + 3;
-    await this.swapi.getPlanet(id)
+    this.swapi.getPlanet(id)
     .then(this.onPlanetLoaded)
     .catch(this.onError)
   }
