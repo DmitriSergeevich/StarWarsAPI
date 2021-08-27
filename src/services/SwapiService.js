@@ -1,6 +1,6 @@
 export default class SwapiService {
   _apiBase = 'https://swapi.dev/api';
-
+  _ImageUrlBase = 'https://starwars-visualguide.com/assets/img'
   async getResource(url) {
     const res = await fetch(`${this._apiBase}` + url);
     if (!res.ok) {
@@ -9,8 +9,8 @@ export default class SwapiService {
     return await res.json()
   }
   
-  extractId = (url) => {    
-    const regExp = /\/([0-9]*)\/$/;    
+  extractId = (url) => {
+    const regExp = /\/([0-9]*)\/$/;
     return url.match(regExp)[1];    
   }
   
@@ -24,43 +24,43 @@ export default class SwapiService {
     }
   }
 
-  async getAllPeople() {
+  getAllPeople = async () => {
     const people = await this.getResource('/people/');
     return people.results.map(this.transformPerson)
   }
 
-  async getPerson(id) {    
+  getPerson= async (id) => {   
     const person = await this.getResource('/people/' + id);    
     return this.transformPerson(person)
   }
   
-  transformPlanet(planet) {    
+  transformPlanet = (planet) => { 
     return {
-      id: this.extractId(planet.url) ,
-      planetName: planet.name,
+      id: this.extractId(planet.url),
+      name: planet.name,
       population: planet.population,
       diameter: planet.diameter,
       period: planet.rotation_period
     }
   }
 
-  async getAllPlanet() {
-    const planets = await this.getResource('/planets/');
+  getAllPlanet = async () => {
+    const planets = await this.getResource('/planets/');    
     return planets.results.map(this.transformPlanet)
   }
 
-  async getPlanet(id) {
+  getPlanet = async (id) => {
     const planet = await this.getResource('/planets/' + id)
     return this.transformPlanet(planet)
   }
   
-  transformStarship = (starship) => {
+  transformStarship = (starship) => {    
     return {
       id: this.extractId(starship.url),
       name: starship.name,
       model: starship.model,
       manufacturer: starship.manufacturer,
-      costInCredits: starship.costInCredits,
+      costInCredits: starship.cost_in_credits,
       length: starship.length,
       crew: starship.crew,
       passengers: starship.passengers,
@@ -68,14 +68,24 @@ export default class SwapiService {
     }
   }
 
-  async getAllStarships() {
+  getAllStarships = async () => {
     const starships = await this.getResource('/starships/');
     return starships.results.map(this.transformStarship);
   }
 
-  async getStarship(id) {
-    const starship =  this.getResource('/starships/' + id);
+  getStarship = async (id) => {
+    const starship = await this.getResource('/starships/' + id);
     return this.transformStarship(starship);
   }
-
+  
+  getPersonImage = ({ id }) => {
+    return `${this._ImageUrlBase}/characters/${id}.jpg`
+  }
+  getStarshipImage = ({ id }) => {
+    return `${this._ImageUrlBase}/starships/${id}.jpg`
+  }
+  getPlanetImage = ({ id }) => {
+    return `${this._ImageUrlBase}/planets/${id}.jpg`
+  }
 }
+
