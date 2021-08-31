@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import ErrorButton from '../ErrorButton/ErrorButton';
 import SwapiService from '../../services/SwapiService';
-
 import './ItemDetails.css';
 
 export default class ItemDetails extends Component {
@@ -63,7 +61,7 @@ export default class ItemDetails extends Component {
             })
             }
           </ul>
-          <ErrorButton/>
+          
         </div>        
       </div>
       
