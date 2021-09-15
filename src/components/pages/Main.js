@@ -29,6 +29,7 @@ const Main = ({state, onChange, onInput, onChangePage, history}) => {
           className="form-control search-input"
           placeholder="Type to search"
           onChange={onChange}
+          onKeyDown={(e)=> e.code === 'Enter' && onInput()}
         />
         <Button key={"find"} onClick={onInput} lable="Find" />
       </div>
@@ -79,7 +80,7 @@ export default class MainContainer extends React.Component {
       this.setAppState(clearState)
     }
   };
-
+  
   onInput = () => {
     if (this.state.term !== "") {
       this.setState({ loading: true, foundPeople: [] });
@@ -108,10 +109,10 @@ export default class MainContainer extends React.Component {
       loading: true, foundPeople: []
     })
 
-    const page =
+    const pageURL =
       button.key === "next" ? this.state.nextPage : this.state.prevPage;
 
-    this.swapi.getFoundPeoplePage(page)
+    this.swapi.getFoundPeoplePage(pageURL)
     .then(({ foundPeople, dataPeople }) => {
       const pageData = {
         foundPeople,

@@ -89,9 +89,16 @@ export default class SwapiService {
   getPlanetImage = ({ id }) => {
     return `${this._ImageUrlBase}/planets/${id}.jpg`;
   };
+  
+  validateTerm = (term) => {
+    const regExp = /\?|=|&|\//g;    
+    return term.split(regExp).join(' ');
+  }
 
   getSearchPeople = async (str) => {
-    const dataPeople = await this.getResource(`/people/?search=${str}`);
+    const term = this.validateTerm(str);
+
+    const dataPeople = await this.getResource(`/people/?search=${term}`);
 
     return {
       foundPeople: dataPeople.results.map(this.transformPerson),
