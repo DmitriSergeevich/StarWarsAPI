@@ -24,19 +24,19 @@ const Main = ({state, onChange, onInput, onChangePage, history}) => {
       <h4 className="section-article">Find a character</h4>
       <div style={{ display: "flex" }}>
         <input
-          value={term}
+          value={ term }
           type="text"
           className="form-control search-input"
           placeholder="Type to search"
-          onChange={onChange}
-          onKeyDown={(e)=> e.code === 'Enter' && onInput()}
+          onChange={ onChange }
+          onKeyDown={ e => e.code === 'Enter' && onInput() }
         />
-        <Button key={"find"} onClick={onInput} lable="Find" />
+        <Button key={ "find" } onClick={ onInput } lable="Find" />
       </div>
       {foundMatches}
       {loader}
-      <ul className="item-list list-group">{FoundPeopleList(foundPeople, history)}</ul>      
-      {PaginationControl(nextPage, prevPage, foundCount, loading, onChangePage)}
+      <ul className="item-list list-group">{ FoundPeopleList(foundPeople, history) }</ul>      
+      < PaginationControl nextPage={nextPage} prevPage={prevPage} foundCount={foundCount} loading={loading} onChangePage={onChangePage} />
     </div>
   );
 };
@@ -101,8 +101,8 @@ export default class MainContainer extends React.Component {
           this.setAppState(searchData)
         }
       );
-    }
-  };
+    };
+  }
 
   onChangePage = (button) => {
     this.setState({

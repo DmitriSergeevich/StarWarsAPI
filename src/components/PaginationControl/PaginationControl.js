@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '../Button/Button';
 import './PaginationControl.css';
 
-export  const PaginationControl = (nextPage, prevPage, foundCount, loading, onChangePage) => {
+export  const PaginationControl = ({nextPage, prevPage, foundCount, loading, onChangePage}) => {
   const prevButton = prevPage ? (
     <Button
       key={"prev"}

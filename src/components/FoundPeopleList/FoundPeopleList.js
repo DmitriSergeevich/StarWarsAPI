@@ -7,12 +7,11 @@ export const FoundPeopleList = (foundPeople, history) => {
     return (
       <li
         className="list-group-item"
-        key={id}
+        key={ id }
         onClick={(id) => history.push("/people/" + stringedId)}
       >
-        {name}
+        { name }
       </li>
     );
-  });
-  
+  });  
 }
