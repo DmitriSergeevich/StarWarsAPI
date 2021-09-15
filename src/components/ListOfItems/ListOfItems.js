@@ -10,7 +10,6 @@ const withChildFunction = (Wrapped, fn) => {
         {fn}
       </Wrapped>
     )
-    
   }    
 }
 

@@ -7,8 +7,8 @@ export const WithSwappiService = (Wrapped, mapMethodsToProps) => {
     return (
       <SwappiSeviceConsumer >
         {
-          (swappi) => {
-            const serviceProps = mapMethodsToProps(swappi)
+          ({swapi}) => {
+            const serviceProps = mapMethodsToProps(swapi)
             return (
             <Wrapped {...props} {...serviceProps} />
             )
