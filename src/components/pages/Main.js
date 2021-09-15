@@ -4,6 +4,7 @@ import { Button } from "../Button/Button";
 import { FoundPeopleList } from "../FoundPeopleList/FoundPeopleList";
 import { PaginationControl } from "../PaginationControl/PaginationControl";
 import { Spiner } from "../Spiner/Spiner";
+import './Main.css';
 
 const Main = ({state, onChange, onInput, onChangePage, history}) => {
   const { nextPage, prevPage, foundCount, foundPeople, loading, term } = state;
@@ -11,16 +12,16 @@ const Main = ({state, onChange, onInput, onChangePage, history}) => {
   const matches = foundCount === 1 ? "match" : "matches";
 
   const foundMatches = foundCount !== null ? (
-    <h4>
+    <h6 className='found-count'>
       Found {foundCount} {matches}
-    </h4>
+    </h6>
   ) : null;
   
   const loader = loading ? <Spiner/> : null;
 
   return (
     <div>
-      <h2>Find a character</h2>
+      <h4 className="section-article">Find a character</h4>
       <div style={{ display: "flex" }}>
         <input
           value={term}
@@ -34,7 +35,7 @@ const Main = ({state, onChange, onInput, onChangePage, history}) => {
       {foundMatches}
       {loader}
       <ul className="item-list list-group">{FoundPeopleList(foundPeople, history)}</ul>      
-      {PaginationControl(nextPage, prevPage, foundCount, onChangePage)}
+      {PaginationControl(nextPage, prevPage, foundCount, loading, onChangePage)}
     </div>
   );
 };
@@ -85,7 +86,7 @@ export default class MainContainer extends React.Component {
 
       this.swapi.getSearchPeople(this.state.term)
         .then(({ foundPeople, dataPeople }) => {
-          const searchdData = {
+          const searchData = {
             foundPeople,
             nextPage: dataPeople.next,
             prevPage: dataPeople.previous,
@@ -94,9 +95,9 @@ export default class MainContainer extends React.Component {
             term: this.state.term
           }
 
-          this.setState(searchdData)
+          this.setState(searchData)
 
-          this.setAppState(searchdData)
+          this.setAppState(searchData)
         }
       );
     }
