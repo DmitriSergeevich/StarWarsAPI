@@ -2,25 +2,11 @@ import React from "react";
 import SwapiService from "../../services/SwapiService";
 import { Button } from "../Button/Button";
 import { FoundPeopleList } from "../FoundPeopleList/FoundPeopleList";
+import { PaginationControl } from "../PaginationControl/PaginationControl";
+import { Spiner } from "../Spiner/Spiner";
 
 const Main = ({state, onChange, onInput, onChangePage, history}) => {
-  const { nextPage, prevPage, foundCount, foundPeople } = state;
-
-  const prevButton = prevPage ? (
-    <Button
-      key={"prev"}
-      onClick={() => onChangePage(prevButton)}
-      lable="&lt; Prev"
-    />
-  ) : null;
-
-  const nextButton = nextPage ? (
-    <Button
-      key={"next"}
-      onClick={() => onChangePage(nextButton)}
-      lable="Next &gt;"
-    />
-  ) : null;
+  const { nextPage, prevPage, foundCount, foundPeople, loading, term } = state;
   
   const matches = foundCount === 1 ? "match" : "matches";
 
@@ -29,12 +15,15 @@ const Main = ({state, onChange, onInput, onChangePage, history}) => {
       Found {foundCount} {matches}
     </h4>
   ) : null;
+  
+  const loader = loading ? <Spiner/> : null;
 
   return (
     <div>
       <h2>Find a character</h2>
       <div style={{ display: "flex" }}>
         <input
+          value={term}
           type="text"
           className="form-control search-input"
           placeholder="Type to search"
@@ -43,11 +32,9 @@ const Main = ({state, onChange, onInput, onChangePage, history}) => {
         <Button key={"find"} onClick={onInput} lable="Find" />
       </div>
       {foundMatches}
-      <ul className="item-list list-group">{FoundPeopleList(foundPeople, history)}</ul>
-      <div className="btn-group">
-        {prevButton}
-        {nextButton}
-      </div>
+      {loader}
+      <ul className="item-list list-group">{FoundPeopleList(foundPeople, history)}</ul>      
+      {PaginationControl(nextPage, prevPage, foundCount, onChangePage)}
     </div>
   );
 };
@@ -59,36 +46,85 @@ export default class MainContainer extends React.Component {
     nextPage: null,
     prevPage: null,
     foundCount: null,
+    loading: false,
   };
+  
+  setAppState = this.props.setAppState;
+
+  componentDidMount() {
+   this.setState({...this.props.appState})
+  }
 
   swapi = new SwapiService();
 
   onChange = (e) => {
     const term = e.target.value;
-    this.setState({ term });
+
+    if (term !== "" && term !== null) {
+      this.setState({ term });
+     
+    } else {
+      const clearState = {
+        term: "",
+        foundPeople: [],
+        nextPage: null,
+        prevPage: null,
+        foundCount: null,
+        loading: false,
+      }
+
+      this.setState(clearState)
+
+      this.setAppState(clearState)
+    }
   };
 
   onInput = () => {
-    this.swapi.getSearchPeople(this.state.term)
-    .then(({ foundPeople, dataPeople }) => this.setState({
+    if (this.state.term !== "") {
+      this.setState({ loading: true, foundPeople: [] });
+
+      this.swapi.getSearchPeople(this.state.term)
+        .then(({ foundPeople, dataPeople }) => {
+          const searchdData = {
+            foundPeople,
+            nextPage: dataPeople.next,
+            prevPage: dataPeople.previous,
+            foundCount: dataPeople.count,
+            loading: false,
+            term: this.state.term
+          }
+
+          this.setState(searchdData)
+
+          this.setAppState(searchdData)
+        }
+      );
+    }
+  };
+
+  onChangePage = (button) => {
+    this.setState({
+      loading: true, foundPeople: []
+    })
+
+    const page =
+      button.key === "next" ? this.state.nextPage : this.state.prevPage;
+
+    this.swapi.getFoundPeoplePage(page)
+    .then(({ foundPeople, dataPeople }) => {
+      const pageData = {
         foundPeople,
         nextPage: dataPeople.next,
         prevPage: dataPeople.previous,
         foundCount: dataPeople.count,
-      })
-    );
-  }
+        loading: false,
+        term: this.state.term
+      }
 
-  onChangePage = (button) => {
-    const page =
-      button.key === "next" ? this.state.nextPage : this.state.prevPage;
+      this.setState(pageData)
 
-    this.swapi.getFoundPeoplePage(page).then(({ foundPeople, dataPeople }) => this.setState({
-      foundPeople,
-      nextPage: dataPeople.next,
-      prevPage: dataPeople.previous,
-      foundCount: dataPeople.count,
-    }));
+      this.setAppState(pageData)
+    });
   };
 
   render() {

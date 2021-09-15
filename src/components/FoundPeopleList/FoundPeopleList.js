@@ -1,7 +1,7 @@
 import React from "react";
 
 export const FoundPeopleList = (foundPeople, history) => {
- return foundPeople.map((item) => {
+ return foundPeople.map(item => {
     const { id, name } = item;
     const stringedId = String(id);
     return (
